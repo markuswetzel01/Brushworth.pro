@@ -3,7 +3,121 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brushworth.pro — Struktur für künstlerische Preisbildung</title>
+
+<!-- Primary SEO -->
+<title>Brushworth.pro — Kunstpreise berechnen & strukturiert festlegen</title>
+<meta name="description" content="Brushworth.pro hilft Künstlern, Gemälde- und Kunstpreise systematisch zu berechnen: m²-Anker, Geo-Faktor, Editions-Logik, Konsistenz-Prüfung. Einmaliger Kauf, kein Abo.">
+<meta name="keywords" content="Kunstpreise berechnen, Gemälde Preis festlegen, art pricing tool, Preisbildung Kunst, Kunstpreis Kalkulator, Kunst verkaufen Preis">
+<meta name="author" content="Protea Lounge · Markus Wetzel">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://brushworth.pro/">
+
+<!-- hreflang -->
+<link rel="alternate" hreflang="de" href="https://brushworth.pro/">
+<link rel="alternate" hreflang="en" href="https://brushworth.pro/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://brushworth.pro/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://brushworth.pro/">
+<meta property="og:title" content="Brushworth.pro — Kunstpreise strukturiert berechnen">
+<meta property="og:description" content="Preisbildung für Künstler — kein Abo, einmaliger Kauf. m²-Anker, Geo-Faktor, Editions-Logik. Daten bleiben lokal. Launch Q3 2026.">
+<meta property="og:image" content="https://brushworth.pro/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="de_DE">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:site_name" content="Brushworth.pro">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Brushworth.pro — Kunstpreise strukturiert berechnen">
+<meta name="twitter:description" content="Preisbildung für Künstler — kein Abo, einmaliger Kauf. m²-Anker, Geo-Faktor, Editions-Logik. Launch Q3 2026.">
+<meta name="twitter:image" content="https://brushworth.pro/og-image.png">
+
+<!-- Schema.org: SoftwareApplication -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Brushworth.pro",
+  "url": "https://brushworth.pro",
+  "description": "Preisbildungstool für Künstler mit m²-Anker, Geo-Faktor, Editions-Logik und Konsistenz-Prüfung. Einmaliger Kauf, keine Abonnementkosten, alle Daten lokal.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Web",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Freemium",
+      "price": "0",
+      "priceCurrency": "EUR"
+    },
+    {
+      "@type": "Offer",
+      "name": "Pro (Early Bird)",
+      "price": "39",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/PreOrder"
+    },
+    {
+      "@type": "Offer",
+      "name": "Pro",
+      "price": "69",
+      "priceCurrency": "EUR",
+      "availability": "https://schema.org/PreOrder"
+    }
+  ],
+  "publisher": {
+    "@type": "Organization",
+    "name": "Protea Lounge",
+    "url": "https://protealounge.de"
+  },
+  "inLanguage": ["de","en","fr","es","it","nl","pl","pt","sv","ja"],
+  "featureList": [
+    "m²-Anker Preisberechnung",
+    "Geo-Faktor Marktanpassung",
+    "Editions- und Druckverkauf-Logik",
+    "Konsistenz-Prüfung",
+    "Persönliche Preishistorie-Datenbank",
+    "Lokal – kein Login, keine Cloud"
+  ]
+}
+</script>
+
+<!-- Schema.org: FAQPage (boosts rich snippets) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Wie berechne ich den richtigen Preis für meine Gemälde?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Brushworth.pro berechnet einen strukturierten Richtwert auf Basis von Format (m²), Technik, Komplexität, Markt-Kontext und Geo-Faktor. So entsteht ein reproduzierbarer, begründbarer Preis statt reines Bauchgefühl."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Ist Brushworth.pro kostenlos?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Es gibt eine kostenlose Freemium-Version mit Basisfunktionen. Die Pro-Version ist für €39 (erste 200 Käufer) bzw. €69 erhältlich — einmalig, kein Abo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Werden meine Daten in der Cloud gespeichert?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nein. Alle Daten bleiben lokal auf deinem Gerät. Es gibt kein Login, keine Cloud-Synchronisierung."
+      }
+    }
+  ]
+}
+</script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -378,6 +492,15 @@ footer{background:var(--ink);color:#8a7a5e;padding:36px 0 50px;border-top:1px so
 .reveal{opacity:0;transform:translateY(20px);transition:opacity 0.8s ease, transform 0.8s ease;}
 .reveal.on{opacity:1;transform:translateY(0);}
 
+/* Hero Inline Form */
+.hero-inline-form{max-width:520px;margin-bottom:8px;}
+.hero-inline-row{display:flex;gap:10px;flex-wrap:wrap;}
+.hero-email-input{flex:1;min-width:200px;background:var(--paper);border:1.5px solid var(--line-strong);border-radius:99px;padding:13px 20px;font-family:var(--sans);font-size:0.95rem;color:var(--ink);outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.hero-email-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(184,134,44,0.12);}
+.hero-email-input::placeholder{color:var(--soft);}
+.hero-submit-btn{white-space:nowrap;flex-shrink:0;}
+@media(max-width:480px){.hero-submit-btn{width:100%;justify-content:center;}}
+
 [data-en]{display:none !important;}
 html[lang="en"] [data-de]{display:none !important;}
 html[lang="en"] [data-en]{display:initial !important;}
@@ -452,21 +575,28 @@ html[lang="en"] p[data-en]{display:block !important;}
           <span data-en="">Brushworth.pro brings structure to a process that otherwise gets caught between studio, market, and self-doubt.</span>
         </p>
 
-        <div class="hero-cta-area">
-          <a href="#finalcta" class="btn btn-gold">
-            <span data-de="">Jetzt anmelden</span>
-            <span data-en="">Get notified</span>
-            <span class="arrow">→</span>
-          </a>
-          <a href="#capabilities" class="btn btn-ghost">
-            <span data-de="">Mehr erfahren</span>
-            <span data-en="">Learn more</span>
-          </a>
-        </div>
-        <p class="signup-note">
-          <span data-de="">Keine Werbung. Eine Mail beim Launch. Abmeldung jederzeit.</span>
-          <span data-en="">No marketing. One email at launch. Unsubscribe anytime.</span>
-        </p>
+        <!-- Inline Hero Signup Form -->
+        <form class="hero-inline-form" id="heroSignupForm" onsubmit="heroFormSubmit(event)">
+          <div class="hero-inline-row">
+            <input type="email" id="heroEmail" name="EMAIL" placeholder="name@atelier.com" required autocomplete="email" class="hero-email-input" aria-label="E-Mail-Adresse">
+            <button type="submit" class="btn btn-gold hero-submit-btn">
+              <span data-de="">Benachrichtigen</span><span data-en="">Notify me</span>
+              <span class="arrow">→</span>
+            </button>
+          </div>
+          <p class="signup-note">
+            <span data-de="">Keine Werbung. Eine Mail beim Launch. Abmeldung jederzeit.</span>
+            <span data-en="">No marketing. One email at launch. Unsubscribe anytime.</span>
+          </p>
+          <p id="heroSuccessMsg" style="display:none;color:var(--green);font-family:var(--mono);font-size:0.82rem;margin-top:10px;font-weight:600;">
+            <span data-de="">✓ Du bist dabei. Wir melden uns beim Launch.</span>
+            <span data-en="">✓ You're in. We'll reach out at launch.</span>
+          </p>
+        </form>
+        <a href="#capabilities" class="btn btn-ghost" style="margin-top:14px;display:inline-flex;">
+          <span data-de="">Mehr erfahren</span>
+          <span data-en="">Learn more</span>
+        </a>
 
         <div class="hero-meta">
           <div class="hero-meta-row">
@@ -934,6 +1064,39 @@ html[lang="en"] p[data-en]{display:block !important;}
   }, { threshold: 0.12 });
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 })();
+</script>
+
+<script>
+// Hero inline form → MailerLite subscribe
+async function heroFormSubmit(e) {
+  e.preventDefault();
+  const email = document.getElementById('heroEmail').value.trim();
+  const btn = e.target.querySelector('.hero-submit-btn');
+  const successMsg = document.getElementById('heroSuccessMsg');
+  if (!email) return;
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  try {
+    await fetch('https://assets.mailerlite.com/jsonp/2382834/forms/188608717606880778/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'fields[email]=' + encodeURIComponent(email) + '&ml-submit=1&anticsrf=true'
+    });
+    document.getElementById('heroEmail').style.display = 'none';
+    btn.style.display = 'none';
+    successMsg.style.display = 'block';
+    // Also scroll the bottom form to reflect success if visited
+    const bottomForm = document.querySelector('.row-form');
+    if (bottomForm) bottomForm.style.display = 'none';
+    const bottomSuccess = document.querySelector('.row-success');
+    if (bottomSuccess) bottomSuccess.style.display = 'block';
+  } catch(err) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    // Fallback: scroll to bottom form
+    document.getElementById('finalcta').scrollIntoView({ behavior: 'smooth' });
+  }
+}
 </script>
 
 </body>
