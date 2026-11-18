@@ -87,7 +87,7 @@ const GoogleStore = {
     await this.drive(`files/${ss.spreadsheetId}?addParents=${root.id}&removeParents=${(cur.parents || []).join(',')}&fields=id`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ appProperties: meta }) });
     this.ss = ss.spreadsheetId; this.meta = meta;
     this.titles = { works: S.works, hist: S.hist, settings: S.settings };
-    this.settings = { lang: s.lang, artist: s.artist, prefix: s.prefix, series: [], license: s.license || '', version: CONFIG.VERSION };
+    this.settings = { lang: s.lang, artist: s.artist, prefix: s.prefix, series: [], license: s.license || '', licenseType: s.licenseType || '', version: CONFIG.VERSION };
     await this.writeSettings();
     this.works = []; this.hist = [];
     return this.settings;
@@ -100,7 +100,7 @@ const GoogleStore = {
     const r = await this.sheets(`/${this.ss}/values:batchGet?ranges=${rng}&valueRenderOption=UNFORMATTED_VALUE`);
     const [wv, hv, sv] = r.valueRanges.map(x => x.values || []);
     const s = {}; sv.slice(1).forEach(([k, v]) => { s[k] = v; });
-    this.settings = { lang: s.lang || 'de', artist: s.artist || '', prefix: s.prefix || 'WV', series: JSON.parse(s.series || '[]'), license: s.license || '', version: s.version || '' };
+    this.settings = { lang: s.lang || 'de', artist: s.artist || '', prefix: s.prefix || 'WV', series: JSON.parse(s.series || '[]'), license: s.license || '', licenseType: s.licenseType || '', version: s.version || '' };
     this.works = wv.map((row, i) => { const o = { row: i + 2 }; WK.forEach((k, j) => { o[k] = toKey(k, row[j] ?? ''); }); return o; }).filter(w => String(w.title).trim());
     this.hist = hv.map(r => ({ date: r[0], id: r[1], gross: r[18], lo: r[19], hi: r[20], rating: r[21], chosen: r[22], applied: r[23], note: r[24], tech: r[6], mkt: r[8], geo: r[9] }));
   },
@@ -126,7 +126,7 @@ const GoogleStore = {
   },
   async writeSettings() {
     const s = this.settings;
-    const rows = [['key', 'value'], ['lang', s.lang], ['artist', s.artist], ['prefix', s.prefix], ['series', JSON.stringify(s.series)], ['license', s.license], ['version', CONFIG.VERSION]];
+    const rows = [['key', 'value'], ['lang', s.lang], ['artist', s.artist], ['prefix', s.prefix], ['series', JSON.stringify(s.series)], ['license', s.license], ['licenseType', s.licenseType || ''], ['version', CONFIG.VERSION]];
     await this.sheets(`/${this.ss}/values/${encodeURIComponent(`'${this.titles.settings}'!A1:B${rows.length}`)}?valueInputOption=RAW`, { ...this.body({ values: rows }), method: 'PUT' });
   },
   async saveSettings(next, renames) {
@@ -180,11 +180,16 @@ const DemoStore = {
   links() { return { folder: '#', sheet: '#' }; }
 };
 
-// Gumroad-Lizenzprüfung (nur wenn GUMROAD_PRODUCT_ID gesetzt ist)
-async function verifyLicense(key) {
-  if (!CONFIG.GUMROAD_PRODUCT_ID) return true;
-  const body = new URLSearchParams({ product_id: CONFIG.GUMROAD_PRODUCT_ID, license_key: key.trim(), increment_uses_count: 'false' });
+// Gumroad-Lizenzprüfung. Ergebnis: 'full' | 'beta' | null (ungültig). Netzwerk-/CORS-Fehler werfen.
+async function gumroadCheck(productId, key) {
+  const body = new URLSearchParams({ product_id: productId, license_key: key.trim(), increment_uses_count: 'false' });
   const r = await fetch('https://api.gumroad.com/v2/licenses/verify', { method: 'POST', body });
   const j = await r.json().catch(() => ({}));
-  return !!j.success && !(j.purchase && (j.purchase.refunded || j.purchase.chargebacked));
+  return !!j.success && !(j.purchase && (j.purchase.refunded || j.purchase.chargebacked || j.purchase.disputed));
+}
+async function verifyLicense(key) {
+  if (!key || !key.trim()) return null;
+  if (CONFIG.GUMROAD_FULL_PRODUCT_ID && await gumroadCheck(CONFIG.GUMROAD_FULL_PRODUCT_ID, key)) return 'full';
+  if (CONFIG.GUMROAD_BETA_PRODUCT_ID && !betaOver() && await gumroadCheck(CONFIG.GUMROAD_BETA_PRODUCT_ID, key)) return 'beta';
+  return null;
 }

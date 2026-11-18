@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Lizenztest – Brushworth.pro</title>
+<style>
+body{margin:0;font:16px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:#fbfaf8;color:#1d1c1a}
+main{max-width:520px;margin:8vh auto;padding:0 20px;display:flex;flex-direction:column;gap:14px}
+input,button{font:inherit;font-size:16px;padding:12px;border-radius:6px;border:1px solid #1d1c1a;min-height:46px}
+button{background:#1d1c1a;color:#fff;cursor:pointer}
+#out{white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:14px;background:#f3f0eb;padding:12px;border-radius:6px;min-height:3em}
+</style>
+</head>
+<body>
+<main>
+  <h1 style="margin:0;font-size:22px">Lizenztest</h1>
+  <p style="margin:0">Prüft, ob die App Gumroad direkt erreicht. Ohne echten Schlüssel einfach „Prüfen“ drücken: Die Antwort „Schlüssel ungültig“ bedeutet, dass die Verbindung funktioniert.</p>
+  <input id="key" placeholder="Lizenzschlüssel (optional)" aria-label="Lizenzschlüssel">
+  <button id="go" type="button">Prüfen</button>
+  <div id="out" role="status"></div>
+</main>
+<script src="config.js"></script>
+<script>
+document.getElementById('go').onclick = async () => {
+  const out = document.getElementById('out'); out.textContent = 'Prüfe …';
+  const key = document.getElementById('key').value.trim() || 'TEST-0000-0000-0000';
+  try {
+    const body = new URLSearchParams({ product_id: CONFIG.GUMROAD_BETA_PRODUCT_ID, license_key: key, increment_uses_count: 'false' });
+    const r = await fetch('https://api.gumroad.com/v2/licenses/verify', { method: 'POST', body });
+    const j = await r.json();
+    out.textContent = (j.success ? '✓ Verbindung OK – Schlüssel GÜLTIG (Beta)' : '✓ Verbindung OK – Schlüssel ungültig') + '\n\nHTTP ' + r.status + '\n' + (j.message || '');
+  } catch (e) {
+    out.textContent = '✗ Blockiert – der Browser darf Gumroad nicht direkt fragen (CORS).\n\n' + e.message;
+  }
+};
+</script>
+</body>
+</html>

@@ -132,6 +132,13 @@ dialog::backdrop{background:rgba(0,0,0,.4)}
     <button type="submit" id="btnSetup" data-t="setupStart"></button>
     <span class="err" id="setupErr"></span>
   </form>
+  <form class="card" id="relicenseForm" autocomplete="off" hidden>
+    <h2 data-t="betaOverTitle"></h2>
+    <p class="hint" data-t="betaOverText" style="margin:0"></p>
+    <label class="f s6"><span class="lbl" data-t="setupLicense"></span><input id="relKey"></label>
+    <button type="submit" data-t="betaOverBtn"></button>
+    <span class="err" id="relErr"></span>
+  </form>
 </section>
 
 <!-- App -->

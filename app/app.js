@@ -51,7 +51,7 @@ async function start(interactive) {
   try {
     if (!DEMO) { $('btnSignIn').disabled = true; $('btnSignIn').textContent = T('signingIn'); await S.signIn(interactive); }
     const s = await S.open();
-    if (!s) { $('suLang').value = LANG; $('suLicWrap').hidden = !CONFIG.GUMROAD_PRODUCT_ID; show('scrSetup'); return; }
+    if (!s) { $('suLang').value = LANG; $('suLicWrap').hidden = !LICENSE_REQUIRED; show('scrSetup'); return; }
     enterApp();
   } catch (e) {
     $('signInErr').textContent = T('loadFailed') + ': ' + e.message; show('scrSignIn');
@@ -64,16 +64,30 @@ $('setupForm').onsubmit = async e => {
   if (!s.artist || !s.prefix) return;
   $('btnSetup').disabled = true; $('btnSetup').textContent = T('setupRunning');
   try {
-    if (CONFIG.GUMROAD_PRODUCT_ID) {
-      let ok = false; try { ok = await verifyLicense(s.license); } catch (err) { $('setupErr').textContent = T('licenseError'); return; }
-      if (!ok) { $('setupErr').textContent = T('licenseInvalid'); return; }
+    if (LICENSE_REQUIRED) {
+      let type = null; try { type = await verifyLicense(s.license); } catch (err) { $('setupErr').textContent = T('licenseError'); return; }
+      if (!type) { $('setupErr').textContent = T('licenseInvalid'); return; }
+      s.licenseType = type;
     }
     await S.setup(s); LANG = s.lang; store.set('bw-lang', LANG); enterApp();
   } catch (err) { $('setupErr').textContent = T('loadFailed') + ': ' + err.message; }
   finally { $('btnSetup').disabled = false; $('btnSetup').textContent = T('setupStart'); }
 };
 $('signOut').onclick = () => { S.signOut(); location.reload(); };
-function enterApp() { if (!store.get('bw-lang') && S.settings.lang) LANG = S.settings.lang; $('hArtist').textContent = S.settings.artist || ''; show('scrApp'); applyLang(); select(null); }
+function needsNewLicense() { return !DEMO && S.settings && S.settings.licenseType === 'beta' && betaOver(); }
+function showRelicense() {
+  show('scrSetup'); $('setupForm').hidden = true; $('relicenseForm').hidden = false;
+}
+$('relicenseForm').onsubmit = async e => {
+  e.preventDefault(); $('relErr').textContent = '';
+  const key = $('relKey').value.trim(); let type = null;
+  try { type = await verifyLicense(key); } catch (err) { $('relErr').textContent = T('licenseError'); return; }
+  if (type !== 'full') { $('relErr').textContent = T('licenseInvalid'); return; }
+  await S.saveSettings({ license: key, licenseType: 'full' }, {});
+  $('relicenseForm').hidden = true; $('setupForm').hidden = false; enterApp();
+};
+function enterApp() {
+  if (needsNewLicense()) { showRelicense(); return; } if (!store.get('bw-lang') && S.settings.lang) LANG = S.settings.lang; $('hArtist').textContent = S.settings.artist || ''; show('scrApp'); applyLang(); select(null); }
 
 // ── Liste & Formular ──
 function renderList() {
