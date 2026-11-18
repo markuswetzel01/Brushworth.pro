@@ -65,6 +65,10 @@ p{margin:0}
 .btn{font:600 1rem var(--head);font-stretch:108%;padding:14px 22px;border-radius:8px;border:1.5px solid var(--ultra);background:var(--ultra);color:#fff;cursor:pointer;min-height:52px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .btn:hover{background:var(--ultra-hi);border-color:var(--ultra-hi)}
 .btn[disabled]{opacity:.6;cursor:default}
+.cta{margin-top:34px}
+.final .cta{margin-top:26px}
+.final .later{margin-top:44px;font-size:.98rem}
+.final .later + .signup{margin-top:14px}
 .fine{margin-top:12px;font-size:.92rem;color:var(--muted)}
 .ok{margin-top:16px;font:600 1.05rem var(--head);color:var(--ultra)}
 
@@ -121,6 +125,8 @@ section{padding:clamp(64px,9vw,112px) 0}
 .final .ok{color:#9fb2ff}
 .final .btn{background:#fff;color:var(--payne);border-color:#fff}
 .final .btn:hover{background:#dfe5ff;border-color:#dfe5ff}
+.final .btn.ghost{background:transparent;color:#fff;border-color:#fff}
+.final .btn.ghost:hover{background:rgba(255,255,255,.12)}
 footer{padding:36px 0 max(36px,env(safe-area-inset-bottom,0px));font:400 .95rem var(--head);color:var(--muted)}
 footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 footer a{color:var(--muted);margin-right:18px}
@@ -153,11 +159,8 @@ footer a{color:var(--muted);margin-right:18px}
         <span data-l="de" class="on">Brushworth.pro ist das Werkverzeichnis für Malerinnen und Maler. Du erfasst Werke mit Foto, legst Preise nachvollziehbar fest und erstellst Provenienz-Nachweise auf Knopfdruck. Am Computer und am Tablet, auf Deutsch und Englisch.</span>
         <span data-l="en">Brushworth.pro is the catalogue raisonné for painters. Record works with a photo, set prices you can explain and create certificates of provenance at the press of a button. On computer and tablet, in English and German.</span>
       </p>
-      <form class="signup" data-signup novalidate>
-        <input type="email" name="email" required autocomplete="email" placeholder="name@atelier.com" aria-label="E-Mail">
-        <button class="btn" type="submit"><span data-l="de" class="on">Für die Beta vormerken</span><span data-l="en">Join the beta list</span></button>
-      </form>
-      <p class="fine"><span data-l="de" class="on">Eine E-Mail, wenn dein Beta-Zugang bereitsteht. Abmeldung jederzeit.</span><span data-l="en">One email when your beta access is ready. Unsubscribe anytime.</span></p>
+      <div class="cta"><a class="btn" href="https://wetzelmarkus1.gumroad.com/l/ytvmhz" rel="noopener"><span data-l="de" class="on">Beta-Platz sichern</span><span data-l="en">Get a beta spot</span></a></div>
+      <p class="fine"><span data-l="de" class="on">30 Plätze, kostenlos bis 30. Juni 2027. Danach 50 % Rabatt auf die Vollversion.</span><span data-l="en">30 spots, free until 30 June 2027. After that, 50 % off the full version.</span></p>
     </div>
 
     <div class="canvas" role="img" aria-label="Rückseite einer Leinwand mit Werkverzeichnis-Etikett und Provenienz-Stempel">
@@ -243,13 +246,15 @@ footer a{color:var(--muted);margin-right:18px}
 
   <section class="final" id="beta">
     <div class="wrap">
-      <h2><span data-l="de" class="on">Die Beta startet mit wenigen Ateliers</span><span data-l="en">The beta starts with a small group of studios</span></h2>
-      <p class="intro"><span data-l="de" class="on">Trag dich ein, wenn du dabei sein willst. Du bekommst eine E-Mail, sobald dein Zugang bereitsteht.</span><span data-l="en">Sign up if you would like to take part. You will get an email as soon as your access is ready.</span></p>
+      <h2><span data-l="de" class="on">Die Beta ist offen für 30 Ateliers</span><span data-l="en">The beta is open to 30 studios</span></h2>
+      <p class="intro"><span data-l="de" class="on">Kostenlos bis 30. Juni 2027, danach 50 % Rabatt auf die Vollversion. Du brauchst nur ein Google-Konto.</span><span data-l="en">Free until 30 June 2027, then 50 % off the full version. All you need is a Google account.</span></p>
+      <div class="cta"><a class="btn" href="https://wetzelmarkus1.gumroad.com/l/ytvmhz" rel="noopener"><span data-l="de" class="on">Beta-Platz sichern</span><span data-l="en">Get a beta spot</span></a></div>
+      <p class="intro later"><span data-l="de" class="on">Lieber erst auf dem Laufenden bleiben? Trag dich ein, wir schreiben dir zum Start der Vollversion.</span><span data-l="en">Rather wait and see? Sign up and we will email you when the full version launches.</span></p>
       <form class="signup" data-signup novalidate>
         <input type="email" name="email" required autocomplete="email" placeholder="name@atelier.com" aria-label="E-Mail">
-        <button class="btn" type="submit"><span data-l="de" class="on">Für die Beta vormerken</span><span data-l="en">Join the beta list</span></button>
+        <button class="btn ghost" type="submit"><span data-l="de" class="on">Eintragen</span><span data-l="en">Sign up</span></button>
       </form>
-      <p class="fine"><span data-l="de" class="on">Mit dem Eintragen stimmst du zu, dass wir dir zur Beta schreiben. Details in der <a href="datenschutz.html" style="color:inherit">Datenschutzerklärung</a>.</span><span data-l="en">By signing up you agree that we may email you about the beta. Details in the <a href="datenschutz.html" style="color:inherit">privacy policy</a>.</span></p>
+      <p class="fine"><span data-l="de" class="on">Mit dem Eintragen stimmst du zu, dass wir dir zu Brushworth.pro schreiben. Details in der <a href="datenschutz.html" style="color:inherit">Datenschutzerklärung</a>.</span><span data-l="en">By signing up you agree that we may email you about Brushworth.pro. Details in the <a href="datenschutz.html" style="color:inherit">privacy policy</a>.</span></p>
     </div>
   </section>
 </main>
@@ -277,8 +282,8 @@ footer a{color:var(--muted);margin-right:18px}
 
   // Beta-Liste → MailerLite (bestehendes Formular)
   var ML='https://assets.mailerlite.com/jsonp/2382834/forms/188608717606880778/subscribe';
-  var MSG={de:{ok:'Du stehst auf der Beta-Liste. Wir melden uns per E-Mail.',bad:'Bitte gib eine gültige E-Mail-Adresse ein.',err:'Das hat nicht geklappt. Bitte versuche es noch einmal.'},
-           en:{ok:'You are on the beta list. We will be in touch by email.',bad:'Please enter a valid email address.',err:'That did not work. Please try again.'}};
+  var MSG={de:{ok:'Du bist eingetragen. Wir melden uns per E-Mail.',bad:'Bitte gib eine gültige E-Mail-Adresse ein.',err:'Das hat nicht geklappt. Bitte versuche es noch einmal.'},
+           en:{ok:'You are signed up. We will be in touch by email.',bad:'Please enter a valid email address.',err:'That did not work. Please try again.'}};
   document.querySelectorAll('[data-signup]').forEach(function(f){
     f.addEventListener('submit',function(ev){
       ev.preventDefault();
