@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brushworth.pro · Werkverzeichnis</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#fbfaf8">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Brushworth">
+<style>
+:root{--wall:#fbfaf8;--panel:#ffffff;--ink:#1d1c1a;--muted:#6f6a62;--line:#e7e2db;--soft:#f3f0eb;
+  --accent:#8a5a3c;--ok:#3a6b50;--warn:#a3611d;
+  --display:Georgia,"Times New Roman",serif;--body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;--mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--wall:#151413;--panel:#1c1b19;--ink:#ece8e1;--muted:#a19b91;--line:#2e2c29;--soft:#24221f;--accent:#c99472;--ok:#7fb393;--warn:#d9a066;color-scheme:dark}}
+:root[data-theme=dark]{--wall:#151413;--panel:#1c1b19;--ink:#ece8e1;--muted:#a19b91;--line:#2e2c29;--soft:#24221f;--accent:#c99472;--ok:#7fb393;--warn:#d9a066;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--wall);color:var(--ink);font:400 16px/1.5 var(--body);-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:calc(14px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) 14px max(20px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+h1{font:400 21px/1.2 var(--display);margin:0}
+h1 em{color:var(--accent)}
+h2{font:400 20px/1.2 var(--display);margin:0 0 14px}
+.hdr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lbl{font:500 11px/1.4 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.demo{background:var(--warn);color:#fff;padding:8px max(20px,env(safe-area-inset-left,0px));font-size:14px}
+input,select,textarea{font:inherit;font-size:16px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:9px 10px;width:100%;min-width:0;min-height:44px}
+textarea{min-height:64px;resize:vertical}
+input:focus,select:focus,textarea:focus,button:focus-visible,.filebtn:focus-within{outline:2px solid var(--accent);outline-offset:1px}
+button,.filebtn{font:500 15px/1 var(--body);cursor:pointer;border-radius:6px;padding:12px 16px;min-height:44px;border:1px solid var(--ink);background:var(--ink);color:var(--wall);display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button.ghost,.filebtn{background:transparent;color:var(--ink)}
+button.small{padding:8px 12px;min-height:38px;font-size:13px;border-color:var(--line)}
+button:disabled{opacity:.45;cursor:default}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.seg button{border:0;border-radius:0;background:transparent;color:var(--muted);min-height:38px;padding:8px 12px;font-size:13px}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--wall)}
+.screen{max-width:520px;margin:8vh auto;padding:0 20px}
+.screen .card{display:flex;flex-direction:column;gap:14px}
+.app{display:grid;grid-template-columns:300px minmax(0,1fr);min-height:calc(100vh - 70px)}
+aside{border-right:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+main{padding:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-content:start;min-width:0}
+@media (max-width:1180px){main{grid-template-columns:1fr}}
+@media (max-width:860px){.app{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid var(--line)}#list{max-height:34vh}}
+#list{list-style:none;margin:0;padding:0;overflow:auto;flex:1;border-top:1px solid var(--line);-webkit-overflow-scrolling:touch}
+#list li{padding:12px 8px;border-bottom:1px solid var(--line);cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 10px}
+#list li:hover,#list li.on{background:var(--soft)}
+#list .t{font-family:var(--display);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#list .m{grid-column:2;font-size:13px;color:var(--muted)}
+#list .n{font:400 12px/1.9 var(--mono);color:var(--muted);grid-row:span 2}
+#list .empty{display:block;color:var(--muted);cursor:default}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.f{display:flex;flex-direction:column;gap:4px;grid-column:span 3;min-width:0}
+.f.s2{grid-column:span 2}.f.s6{grid-column:span 6}
+@media (max-width:560px){.f,.f.s2{grid-column:span 6}}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.idbadge{font:500 14px var(--mono);color:var(--accent)}
+.photo{display:flex;gap:16px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.thumb{width:150px;height:150px;flex:none;border:1px solid var(--line);border-radius:6px;background:var(--soft);display:grid;place-items:center;overflow:hidden;padding:0;cursor:zoom-in;color:var(--muted)}
+.thumb img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.thumb:disabled{cursor:default;opacity:1}
+.acts{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.prov{margin-top:22px;padding-top:18px;border-top:1px solid var(--line)}
+.prov select{width:auto}
+.links{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px}
+a{color:var(--accent)}
+.lb{position:fixed;inset:0;background:rgba(15,14,13,.94);display:grid;place-items:center;padding:24px;z-index:30;cursor:zoom-out}
+.lb img{max-width:calc(100vw - 48px);max-height:calc(100vh - 48px);object-fit:contain}
+.lb span{position:absolute;top:calc(14px + env(safe-area-inset-top,0px));right:18px;color:#fff;font:400 12px var(--mono);letter-spacing:.1em}
+.price{font:400 clamp(34px,4vw,46px)/1 var(--display);margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.range{display:flex;justify-content:space-between;font:400 13px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font:500 13px/1 var(--body);padding:7px 11px;border-radius:99px;border:1px solid currentColor}
+.pill.good{color:var(--ok)}.pill.low{color:var(--warn)}.pill.high{color:var(--accent)}.pill.small{color:var(--muted)}
+.bar{display:flex;height:10px;border-radius:2px;overflow:hidden;margin:16px 0 8px;background:var(--soft)}
+.bar span{display:block;height:100%}
+.legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 16px;font-size:13px}
+.legend div{display:flex;gap:8px;align-items:center}
+.legend i{width:9px;height:9px;border-radius:2px;flex:none}
+.legend b{margin-left:auto;font-weight:500;font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 16px;font-size:14px;margin-top:14px;font-variant-numeric:tabular-nums}
+.kv span:nth-child(odd){color:var(--muted)}
+.hint{font-size:13px;color:var(--muted)}
+.err{color:var(--warn);font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.span2{grid-column:1/-1}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--wall);padding:11px 16px;border-radius:6px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:40;max-width:90vw}
+.toast.on{opacity:1}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--ink);padding:22px;width:min(560px,94vw)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="demo" id="demo" hidden data-t="demoBanner"></div>
+<header>
+  <h1>Brushworth.pro <em id="hArtist"></em></h1>
+  <div class="hdr">
+    <span class="lbl" id="count"></span>
+    <div class="seg" role="group" aria-label="Sprache / Language"><button type="button" data-lang="de" aria-pressed="false">DE</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+    <button type="button" class="small ghost" id="theme"></button>
+    <button type="button" class="small ghost" id="openSettings" data-t="settings" hidden></button>
+    <button type="button" class="small ghost" id="signOut" data-t="signOut" hidden></button>
+  </div>
+</header>
+
+<!-- Anmeldung -->
+<section class="screen" id="scrSignIn" hidden>
+  <div class="card">
+    <h2 data-t="signInTitle"></h2>
+    <p class="hint" data-t="signInText" style="margin:0"></p>
+    <button type="button" id="btnSignIn" data-t="signIn"></button>
+    <span class="err" id="signInErr"></span>
+  </div>
+</section>
+
+<!-- Einrichtung -->
+<section class="screen" id="scrSetup" hidden>
+  <form class="card" id="setupForm" autocomplete="off">
+    <h2 data-t="setupTitle"></h2>
+    <p class="hint" data-t="setupText" style="margin:0"></p>
+    <label class="f s6"><span class="lbl" data-t="setupLang"></span><select id="suLang"><option value="de">Deutsch</option><option value="en">English</option></select></label>
+    <label class="f s6"><span class="lbl" data-t="setupArtist"></span><input id="suArtist" required></label>
+    <label class="f s6"><span class="lbl" data-t="setupPrefix"></span><input id="suPrefix" required maxlength="6" style="text-transform:uppercase"><span class="hint" data-t="setupPrefixHint"></span></label>
+    <label class="f s6" id="suLicWrap"><span class="lbl" data-t="setupLicense"></span><input id="suLicense"><span class="hint" data-t="setupLicenseHint"></span></label>
+    <button type="submit" id="btnSetup" data-t="setupStart"></button>
+    <span class="err" id="setupErr"></span>
+  </form>
+</section>
+
+<!-- App -->
+<div class="app" id="scrApp" hidden>
+  <aside>
+    <input id="q" type="search" data-ph="search" aria-label="Suche">
+    <button id="new" type="button" data-t="newWork"></button>
+    <ul id="list"></ul>
+  </aside>
+  <main>
+    <section class="card">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:10px">
+        <h2 data-t="workData"></h2><span class="idbadge" id="wid"></span>
+      </div>
+      <div class="photo">
+        <button type="button" class="thumb" id="thumb" disabled><span class="lbl" data-t="noPhoto"></span></button>
+        <div class="acts">
+          <label class="filebtn"><span data-t="choosePhoto"></span><input type="file" id="file" accept="image/*" hidden></label>
+          <span class="hint" id="photoHint" data-t="photoHint"></span>
+        </div>
+      </div>
+      <form id="form" class="grid" autocomplete="off">
+        <label class="f s6"><span class="lbl" data-t="fTitle"></span><input id="title"></label>
+        <label class="f s2"><span class="lbl" data-t="fYear"></span><input id="year" inputmode="numeric"></label>
+        <label class="f s2"><span class="lbl" data-t="fSeries"></span><select id="series"></select></label>
+        <label class="f s2"><span class="lbl" data-t="fStatus"></span><select id="status"></select></label>
+        <label class="f"><span class="lbl" data-t="fTech"></span><select id="tech"></select></label>
+        <label class="f"><span class="lbl" data-t="fSupport"></span><input id="support" data-ph="fSupportPh"></label>
+        <label class="f s2"><span class="lbl" data-t="fW"></span><input id="w" inputmode="decimal"></label>
+        <label class="f s2"><span class="lbl" data-t="fH"></span><input id="h" inputmode="decimal"></label>
+        <label class="f s2"><span class="lbl" data-t="fD"></span><input id="d" inputmode="decimal"></label>
+        <label class="f"><span class="lbl" data-t="fSign"></span><input id="sign" data-ph="fSignPh"></label>
+        <label class="f"><span class="lbl" data-t="fLoc"></span><input id="loc"></label>
+        <label class="f s2"><span class="lbl" data-t="fPrice"></span><input id="price" inputmode="decimal"></label>
+        <label class="f s2"><span class="lbl" data-t="fPriceSrc"></span><select id="src"></select></label>
+        <label class="f s2"><span class="lbl" data-t="fWeb"></span><select id="web"></select></label>
+        <label class="f"><span class="lbl" data-t="fBuyer"></span><input id="buyer"></label>
+        <label class="f"><span class="lbl" data-t="fSold"></span><input id="soldDate" type="date"></label>
+        <label class="f s6"><span class="lbl" data-t="fExh"></span><textarea id="exh"></textarea></label>
+        <label class="f s6"><span class="lbl" data-t="fPub"></span><input id="pub" data-ph="fPubPh"></label>
+        <label class="f s6"><span class="lbl" data-t="fNotes"></span><textarea id="notes"></textarea></label>
+      </form>
+      <div class="row"><button id="save" type="button" data-t="save"></button><span class="hint" id="saveHint"></span></div>
+      <div class="prov">
+        <span class="lbl" data-t="provTitle"></span>
+        <div class="row" style="margin-top:10px">
+          <select id="plang"><option value="de">Deutsch</option><option value="en">English</option></select>
+          <button id="mkProv" type="button" class="ghost" data-t="provMake"></button>
+        </div>
+        <div class="hint" id="provHint" data-t="provHint" style="margin-top:8px"></div>
+        <div class="links" id="provLinks"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 data-t="bwTitle"></h2>
+      <div class="grid">
+        <label class="f s6"><span class="lbl" data-t="bwComp"></span><select id="comp"></select></label>
+        <label class="f"><span class="lbl" data-t="bwMkt"></span><select id="mkt"></select></label>
+        <label class="f"><span class="lbl" data-t="bwGeo"></span><select id="geo"></select></label>
+        <label class="f"><span class="lbl" data-t="bwEdit"></span><select id="edit"></select></label>
+        <label class="f"><span class="lbl" data-t="bwRound"></span><select id="round"></select></label>
+        <label class="f s2"><span class="lbl" data-t="bwMat"></span><input id="mat" inputmode="decimal" value="0"></label>
+        <label class="f s2"><span class="lbl" data-t="bwFrm"></span><input id="frm" inputmode="decimal" value="0"></label>
+        <label class="f s2"><span class="lbl" data-t="bwVat"></span><input id="vat" inputmode="decimal" value="7"></label>
+        <label class="f s2"><span class="lbl" data-t="bwGall"></span><input id="gall" inputmode="decimal" value="0"></label>
+        <label class="f s2"><span class="lbl" data-t="bwInfl"></span><input id="infl" inputmode="decimal" value="0"></label>
+        <label class="f s2"><span class="lbl" data-t="bwMult"></span><input id="mult" inputmode="decimal" value="1"></label>
+      </div>
+      <div style="margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <span class="lbl" data-t="bwRef"></span><span class="pill small" id="rating">–</span>
+      </div>
+      <div class="price" id="gross">–</div>
+      <div class="range"><span id="lo"></span><span id="hi"></span></div>
+      <div class="bar" id="bar" aria-hidden="true"></div>
+      <div class="legend" id="legend"></div>
+      <div class="kv">
+        <span data-t="kQm"></span><span id="kQm">–</span>
+        <span data-t="kSqm"></span><span id="kSqm">–</span>
+        <span data-t="kNet"></span><span id="kNet">–</span>
+        <span data-t="kGall"></span><span id="kGall">–</span>
+        <span data-t="kProfit"></span><span id="kProfit">–</span>
+        <span data-t="kPers"></span><span id="kPers">–</span>
+      </div>
+      <p class="hint" id="persHint"></p>
+      <div class="grid">
+        <label class="f s2"><span class="lbl" data-t="chosen"></span><input id="chosen" inputmode="decimal"></label>
+        <label class="f" style="grid-column:span 4"><span class="lbl" data-t="pnote"></span><input id="pnote" data-ph="pnotePh"></label>
+      </div>
+      <div class="row">
+        <button id="apply" type="button" data-t="apply"></button>
+        <button id="logOnly" type="button" class="ghost" data-t="logOnly"></button>
+      </div>
+    </section>
+
+    <section class="card span2">
+      <h2 data-t="hist"></h2>
+      <div class="scroll"><table><thead><tr><th data-t="hDate"></th><th data-t="hRef"></th><th data-t="hRange"></th><th data-t="hChosen"></th><th data-t="hApplied"></th><th data-t="hTech"></th><th data-t="hMkt"></th><th data-t="hNote"></th></tr></thead><tbody id="hist"></tbody></table></div>
+      <p class="hint" id="histEmpty"></p>
+    </section>
+  </main>
+</div>
+
+<dialog id="dlgSettings">
+  <form method="dialog" style="display:flex;flex-direction:column;gap:14px" id="setForm">
+    <h2 data-t="settings" style="margin:0"></h2>
+    <label class="f s6"><span class="lbl" data-t="setArtist"></span><input id="setArtist"></label>
+    <label class="f s6"><span class="lbl" data-t="setSeries"></span><textarea id="setSeries" rows="6"></textarea><span class="hint" data-t="setSeriesHint"></span></label>
+    <div class="links"><a id="lnkFolder" target="_blank" rel="noopener" data-t="openDrive"></a><a id="lnkSheet" target="_blank" rel="noopener" data-t="openSheet"></a></div>
+    <div class="row" style="justify-content:flex-end;margin:0">
+      <button type="button" class="ghost" id="setCancel">✕</button>
+      <button type="button" id="setSave" data-t="setSave"></button>
+    </div>
+  </form>
+</dialog>
+
+<div class="lb" id="lb" hidden role="dialog"><img id="lbImg" alt=""><span id="lbClose"></span></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script src="i18n.js"></script>
+<script src="engine.js"></script>
+<script src="store.js"></script>
+<script src="provenance.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
