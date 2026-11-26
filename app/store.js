@@ -28,7 +28,7 @@ function toKey(field, label) {
   if (CODED[field] && I18N.de.opt[CODED[field]][v]) return v; // bereits Schlüssel
   return v;
 }
-const DEFAULT_PUBS = ['Private Collections', 'Coffee Table Book', 'Homepage'];
+const DEFAULT_PUBS = ['Private Collections', 'Coffee Table Book', 'Homepage', 'Prints / Edition', 'Nicht verkäuflich'];
 const splitPub = v => String(v ?? '').split(/\s*;\s*/).map(x => x.trim()).filter(Boolean);
 const joinPub = a => a.join('; ');
 function renameList(works, field, renames, multi) {
