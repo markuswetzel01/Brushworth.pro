@@ -28,6 +28,15 @@ function toKey(field, label) {
   if (CODED[field] && I18N.de.opt[CODED[field]][v]) return v; // bereits Schlüssel
   return v;
 }
+const DEFAULT_PUBS = ['Private Collections', 'Coffee Table Book', 'Homepage'];
+const splitPub = v => String(v ?? '').split(/\s*;\s*/).map(x => x.trim()).filter(Boolean);
+const joinPub = a => a.join('; ');
+function renameList(works, field, renames, multi) {
+  const hit = [];
+  works.forEach(w => { if (multi) { const a = splitPub(w[field]), b = a.map(x => renames[x] || x); if (a.join() !== b.join()) { w[field] = joinPub([...new Set(b)]); hit.push(w); } }
+    else if (renames[w[field]]) { w[field] = renames[w[field]]; hit.push(w); } });
+  return hit;
+}
 const fmtId = (prefix, n) => prefix + '-' + String(n).padStart(4, '0');
 const nextNum = (works, prefix) => Math.max(0, ...works.map(w => parseInt(String(w.id).replace(prefix + '-', ''), 10)).filter(n => !isNaN(n))) + 1;
 
@@ -87,7 +96,7 @@ const GoogleStore = {
     await this.drive(`files/${ss.spreadsheetId}?addParents=${root.id}&removeParents=${(cur.parents || []).join(',')}&fields=id`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ appProperties: meta }) });
     this.ss = ss.spreadsheetId; this.meta = meta;
     this.titles = { works: S.works, hist: S.hist, settings: S.settings };
-    this.settings = { lang: s.lang, artist: s.artist, prefix: s.prefix, series: [], license: s.license || '', licenseType: s.licenseType || '', version: CONFIG.VERSION };
+    this.settings = { lang: s.lang, artist: s.artist, prefix: s.prefix, series: [], pubs: DEFAULT_PUBS.slice(), license: s.license || '', licenseType: s.licenseType || '', version: CONFIG.VERSION };
     await this.writeSettings();
     this.works = []; this.hist = [];
     return this.settings;
@@ -100,7 +109,7 @@ const GoogleStore = {
     const r = await this.sheets(`/${this.ss}/values:batchGet?ranges=${rng}&valueRenderOption=UNFORMATTED_VALUE`);
     const [wv, hv, sv] = r.valueRanges.map(x => x.values || []);
     const s = {}; sv.slice(1).forEach(([k, v]) => { s[k] = v; });
-    this.settings = { lang: s.lang || 'de', artist: s.artist || '', prefix: s.prefix || 'WV', series: JSON.parse(s.series || '[]'), license: s.license || '', licenseType: s.licenseType || '', version: s.version || '' };
+    this.settings = { lang: s.lang || 'de', artist: s.artist || '', prefix: s.prefix || 'WV', series: JSON.parse(s.series || '[]'), pubs: s.pubs ? JSON.parse(s.pubs) : DEFAULT_PUBS.slice(), license: s.license || '', licenseType: s.licenseType || '', version: s.version || '' };
     this.works = wv.map((row, i) => { const o = { row: i + 2 }; WK.forEach((k, j) => { o[k] = toKey(k, row[j] ?? ''); }); return o; }).filter(w => String(w.title).trim());
     this.hist = hv.map(r => ({ date: r[0], id: r[1], gross: r[18], lo: r[19], hi: r[20], rating: r[21], chosen: r[22], applied: r[23], note: r[24], tech: r[6], mkt: r[8], geo: r[9] }));
   },
@@ -126,13 +135,14 @@ const GoogleStore = {
   },
   async writeSettings() {
     const s = this.settings;
-    const rows = [['key', 'value'], ['lang', s.lang], ['artist', s.artist], ['prefix', s.prefix], ['series', JSON.stringify(s.series)], ['license', s.license], ['licenseType', s.licenseType || ''], ['version', CONFIG.VERSION]];
+    const rows = [['key', 'value'], ['lang', s.lang], ['artist', s.artist], ['prefix', s.prefix], ['series', JSON.stringify(s.series)], ['pubs', JSON.stringify(s.pubs || [])], ['license', s.license], ['licenseType', s.licenseType || ''], ['version', CONFIG.VERSION]];
     await this.sheets(`/${this.ss}/values/${encodeURIComponent(`'${this.titles.settings}'!A1:B${rows.length}`)}?valueInputOption=RAW`, { ...this.body({ values: rows }), method: 'PUT' });
   },
-  async saveSettings(next, renames) {
+  async saveSettings(next, renames, pubRenames) {
     Object.assign(this.settings, next);
     await this.writeSettings();
-    for (const w of this.works) if (renames[w.series]) { w.series = renames[w.series]; await this.saveWork(w); }
+    const hit = new Set([...renameList(this.works, 'series', renames || {}), ...renameList(this.works, 'pub', pubRenames || {}, true)]);
+    for (const w of hit) await this.saveWork(w);
   },
   multipart(meta, blob, type) {
     const b = 'bw' + Math.random().toString(36).slice(2);
@@ -162,8 +172,8 @@ const DemoStore = {
   signIn() { return Promise.resolve(); }, signOut() {},
   async open() { return this.settings; },
   async setup(s) {
-    this.settings = { ...s, series: ['Landschaften', 'Rheinlicht', 'Porträts'] };
-    this.works = [{ row: 2, id: s.prefix + '-0001', title: 'Beispielwerk', year: 2024, series: 'Rheinlicht', tech: 'oil', support: 'Leinwand', w: 80, h: 60, d: '', sign: 'unten rechts', status: 'sold', loc: 'Unkel', price: 1900, src: 'manual', buyer: 'Privatsammlung', soldDate: '2025-05-10', exh: 'Kunstverein Unkel 2025', pub: '', web: 'yes', notes: '', photo: '', updated: '' }];
+    this.settings = { ...s, series: ['Landschaften', 'Rheinlicht', 'Porträts'], pubs: DEFAULT_PUBS.slice() };
+    this.works = [{ row: 2, id: s.prefix + '-0001', title: 'Beispielwerk', year: 2024, series: 'Rheinlicht', tech: 'oil', support: 'Leinwand', w: 80, h: 60, d: '', sign: 'unten rechts', status: 'sold', loc: 'Unkel', price: 1900, src: 'manual', buyer: 'Privatsammlung', soldDate: '2025-05-10', exh: 'Kunstverein Unkel 2025', pub: 'Private Collections; Homepage', web: 'yes', notes: '', photo: '', updated: '' }];
     return this.settings;
   },
   async saveWork(w) {
@@ -173,7 +183,7 @@ const DemoStore = {
     return o;
   },
   async addHistory(p) { this.hist.push({ date: p.date, id: p.id, gross: p.gross, lo: p.lo, hi: p.hi, chosen: p.chosen, applied: p.applied, note: p.note, tech: p.techLabel, mkt: p.mktLabel, geo: p.geoLabel }); },
-  async saveSettings(next, renames) { Object.assign(this.settings, next); this.works.forEach(w => { if (renames[w.series]) w.series = renames[w.series]; }); },
+  async saveSettings(next, renames, pubRenames) { Object.assign(this.settings, next); renameList(this.works, 'series', renames || {}); renameList(this.works, 'pub', pubRenames || {}, true); },
   async uploadPhoto(w, blob) { const id = 'demo-' + w.row; this.photos[id] = blob; return id; },
   async photoBlob(id) { return this.photos[id]; },
   async saveProvenance(name, docxBlob) { const u = URL.createObjectURL(docxBlob); return { doc: u, pdf: '', docName: name + '.docx' }; },

@@ -51,6 +51,18 @@ main{padding:20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)
 #list .t{font-family:var(--display);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #list .m{grid-column:2;font-size:13px;color:var(--muted)}
 #list .n{font:400 12px/1.9 var(--mono);color:var(--muted);grid-row:span 2}
+.ms{position:relative}
+.ms summary{list-style:none;cursor:pointer;border:1px solid var(--line);border-radius:6px;background:var(--panel);padding:9px 34px 9px 10px;min-height:44px;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+.ms summary::-webkit-details-marker{display:none}
+.ms summary::after{content:"▾";position:absolute;right:12px;top:12px;color:var(--muted)}
+.ms[open] summary{outline:2px solid var(--accent);outline-offset:1px}
+.ms .chip{font-size:13px;background:var(--soft);border:1px solid var(--line);border-radius:999px;padding:3px 10px}
+.ms .none{color:var(--muted)}
+.ms-opts{border:1px solid var(--line);border-top:0;border-radius:0 0 6px 6px;background:var(--panel);padding:4px 0}
+.ms-opts label{display:flex;align-items:center;gap:10px;padding:10px 12px;min-height:44px;cursor:pointer}
+.ms-opts label:hover{background:var(--soft)}
+.ms-opts input{width:20px;height:20px;min-height:0;flex:none;accent-color:var(--accent)}
+.ms-opts .x{color:var(--muted);font-size:13px}
 #list .empty{display:block;color:var(--muted);cursor:default}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;min-width:0}
 .grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
@@ -145,6 +157,7 @@ dialog::backdrop{background:rgba(0,0,0,.4)}
 <div class="app" id="scrApp" hidden>
   <aside>
     <input id="q" type="search" data-ph="search" aria-label="Suche">
+    <select id="cat" aria-label="Kategorie"></select>
     <button id="new" type="button" data-t="newWork"></button>
     <ul id="list"></ul>
   </aside>
@@ -178,7 +191,7 @@ dialog::backdrop{background:rgba(0,0,0,.4)}
         <label class="f"><span class="lbl" data-t="fBuyer"></span><input id="buyer"></label>
         <label class="f"><span class="lbl" data-t="fSold"></span><input id="soldDate" type="date"></label>
         <label class="f s6"><span class="lbl" data-t="fExh"></span><textarea id="exh"></textarea></label>
-        <label class="f s6"><span class="lbl" data-t="fPub"></span><input id="pub" data-ph="fPubPh"></label>
+        <div class="f s6"><span class="lbl" id="pubLbl" data-t="fPub"></span><input type="hidden" id="pub"><details class="ms" id="pubBox"><summary id="pubSum" aria-labelledby="pubLbl"></summary><div class="ms-opts" id="pubOpts"></div></details><span class="hint" data-t="fPubHint"></span></div>
         <label class="f s6"><span class="lbl" data-t="fNotes"></span><textarea id="notes"></textarea></label>
       </form>
       <div class="row"><button id="save" type="button" data-t="save"></button><span class="hint" id="saveHint"></span></div>
@@ -247,6 +260,7 @@ dialog::backdrop{background:rgba(0,0,0,.4)}
     <h2 data-t="settings" style="margin:0"></h2>
     <label class="f s6"><span class="lbl" data-t="setArtist"></span><input id="setArtist"></label>
     <label class="f s6"><span class="lbl" data-t="setSeries"></span><textarea id="setSeries" rows="6"></textarea><span class="hint" data-t="setSeriesHint"></span></label>
+    <label class="f s6"><span class="lbl" data-t="setPubs"></span><textarea id="setPubs" rows="5"></textarea><span class="hint" data-t="setPubsHint"></span></label>
     <div class="links"><a id="lnkFolder" target="_blank" rel="noopener" data-t="openDrive"></a><a id="lnkSheet" target="_blank" rel="noopener" data-t="openSheet"></a></div>
     <div class="row" style="justify-content:flex-end;margin:0">
       <button type="button" class="ghost" id="setCancel">✕</button>

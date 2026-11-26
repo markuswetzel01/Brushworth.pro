@@ -8,7 +8,7 @@ const CONFIG = {
   BETA_END: '2027-06-30',
   // Gumroad product_id der Vollversion (folgt). Leer = noch nicht im Verkauf.
   GUMROAD_FULL_PRODUCT_ID: '',
-  VERSION: '1.1.0-beta'
+  VERSION: '1.2.0-beta'
 };
 const LICENSE_REQUIRED = !!(CONFIG.GUMROAD_BETA_PRODUCT_ID || CONFIG.GUMROAD_FULL_PRODUCT_ID);
 const betaOver = () => new Date().toISOString().slice(0, 10) > CONFIG.BETA_END;

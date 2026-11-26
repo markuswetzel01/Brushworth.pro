@@ -33,7 +33,7 @@ function applyLang() {
   fillSel('round', ['none', '10', '100'].map(k => [k, O.round[k]]));
   $('lbClose').textContent = T('close');
   applyTheme(store.get('bw-theme'));
-  if (S.settings) { $('count').textContent = T('works')(S.works.length); fillSel('series', (S.settings.series || []).map(x => [x, x]), true); }
+  if (S.settings) { $('count').textContent = T('works')(S.works.length); fillSel('series', (S.settings.series || []).map(x => [x, x]), true); fillCat(); renderPub(); }
   $('wid').textContent = cur && cur.id ? cur.id : T('isNew');
   if (!$('scrApp').hidden) { renderList(); update(); }
 }
@@ -89,10 +89,31 @@ $('relicenseForm').onsubmit = async e => {
 function enterApp() {
   if (needsNewLicense()) { showRelicense(); return; } if (!store.get('bw-lang') && S.settings.lang) LANG = S.settings.lang; $('hArtist').textContent = S.settings.artist || ''; show('scrApp'); applyLang(); select(null); }
 
+// ── Publikationen (Mehrfachauswahl) ──
+function fillCat() { fillSel('cat', [['', T('catAll')], ...(S.settings.pubs || []).map(x => [x, x]), ['-', T('catNone')]]); }
+function renderPub() {
+  const sel = splitPub($('pub').value), list = S.settings ? S.settings.pubs || [] : [], extra = sel.filter(x => !list.includes(x));
+  const box = $('pubOpts'); box.innerHTML = '';
+  [...list, ...extra].forEach(name => {
+    const l = document.createElement('label'), c = document.createElement('input'), t = document.createElement('span');
+    c.type = 'checkbox'; c.checked = sel.includes(name); t.textContent = name;
+    c.onchange = () => { const now = splitPub($('pub').value); $('pub').value = joinPub(c.checked ? [...now, name] : now.filter(x => x !== name)); renderPub(); };
+    l.append(c, t); if (!list.includes(name)) { const x = document.createElement('span'); x.className = 'x'; x.textContent = '(' + T('pubOld') + ')'; l.append(x); }
+    box.append(l);
+  });
+  const sum = $('pubSum'); sum.innerHTML = '';
+  if (!sel.length) { const n = document.createElement('span'); n.className = 'none'; n.textContent = T('pubNone'); sum.append(n); }
+  sel.forEach(x => { const c = document.createElement('span'); c.className = 'chip'; c.textContent = x; sum.append(c); });
+}
+$('cat').onchange = renderList;
+document.addEventListener('click', e => { const b = $('pubBox'); if (b.open && !b.contains(e.target)) b.open = false; });
+
 // ── Liste & Formular ──
 function renderList() {
   const q = $('q').value.trim().toLowerCase(), ul = $('list'); ul.innerHTML = '';
-  const ws = S.works.filter(w => !q || [w.id, w.title, w.series, I18N[LANG].opt.tech[w.tech]].join(' ').toLowerCase().includes(q)).slice().reverse();
+  const cat = $('cat').value;
+  const ws = S.works.filter(w => (!q || [w.id, w.title, w.series, w.pub, I18N[LANG].opt.tech[w.tech]].join(' ').toLowerCase().includes(q))
+    && (!cat || (cat === '-' ? !splitPub(w.pub).length : splitPub(w.pub).includes(cat)))).slice().reverse();
   if (!ws.length) { const li = document.createElement('li'); li.className = 'empty'; li.textContent = S.works.length ? T('noHits') : T('noWorks'); ul.append(li); return; }
   ws.forEach(w => {
     const li = document.createElement('li'); li.tabIndex = 0; if (cur && cur.row === w.row) li.className = 'on';
@@ -106,6 +127,7 @@ function select(w) {
   cur = w ? { ...w } : null;
   FIELDS.forEach(f => $(f).value = cur ? (cur[f] ?? '') : '');
   if (cur && cur.series && ![...$('series').options].some(o => o.value === cur.series)) { $('series').add(new Option(cur.series, cur.series)); $('series').value = cur.series; }
+  renderPub(); $('pubBox').open = false;
   $('wid').textContent = cur && cur.id ? cur.id : T('isNew');
   $('saveHint').textContent = ''; $('chosen').value = ''; $('chosen').dataset.auto = '1'; $('pnote').value = ''; $('provLinks').innerHTML = '';
   $('provHint').textContent = T('provHint'); $('photoHint').textContent = T('photoHint'); $('plang').value = LANG;
@@ -235,15 +257,19 @@ $('mkProv').onclick = async () => {
 
 // ── Einstellungen ──
 $('openSettings').onclick = () => {
-  $('setArtist').value = S.settings.artist || ''; $('setSeries').value = (S.settings.series || []).join('\n');
+  $('setArtist').value = S.settings.artist || ''; $('setSeries').value = (S.settings.series || []).join('\n'); $('setPubs').value = (S.settings.pubs || []).join('\n');
   const l = S.links(); $('lnkFolder').href = l.folder; $('lnkSheet').href = l.sheet; $('dlgSettings').showModal();
 };
 $('setCancel').onclick = () => $('dlgSettings').close();
 $('setSave').onclick = async () => {
-  const old = S.settings.series || [], next = $('setSeries').value.split('\n').map(x => x.trim()).filter(Boolean), renames = {};
-  if (old.length === next.length) old.forEach((o, i) => { if (o !== next[i]) renames[o] = next[i]; });
+  const lines = id => [...new Set($(id).value.split('\n').map(x => x.replace(/;/g, ',').trim()).filter(Boolean))];
+  const diff = (old, next) => { const r = {}; old.forEach((o, i) => { const n = next[i]; if (n !== undefined && o !== n && !next.includes(o) && !old.includes(n)) r[o] = n; }); return r; };
+  const next = lines('setSeries'), renames = diff(S.settings.series || [], next);
+  const pubs = lines('setPubs'), pubRenames = diff(S.settings.pubs || [], pubs);
   try {
-    await S.saveSettings({ artist: $('setArtist').value.trim(), series: next }, renames);
+    await S.saveSettings({ artist: $('setArtist').value.trim(), series: next, pubs }, renames, pubRenames);
+    if (cur && cur.pub) { cur.pub = joinPub([...new Set(splitPub(cur.pub).map(x => pubRenames[x] || x))]); $('pub').value = cur.pub; }
+    fillCat(); renderPub();
     $('hArtist').textContent = S.settings.artist; $('dlgSettings').close(); toast(T('setSaved'));
     fillSel('series', next.map(x => [x, x]), true); if (cur && renames[cur.series]) cur.series = renames[cur.series]; if (cur) $('series').value = cur.series || ''; renderList();
   } catch (e) { toast(T('saveFailed') + ': ' + e.message); }
