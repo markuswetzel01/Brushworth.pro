@@ -28,7 +28,7 @@ function toKey(field, label) {
   if (CODED[field] && I18N.de.opt[CODED[field]][v]) return v; // bereits Schlüssel
   return v;
 }
-const DEFAULT_PUBS = ['Private Collections', 'Coffee Table Book', 'Homepage', 'Prints / Edition', 'Nicht verkäuflich'];
+const DEFAULT_PUBS = ['Private Collections', 'Coffee Table Book', 'Homepage', 'Prints / Edition', 'Nicht verkäuflich', 'Leihgabe'];
 const splitPub = v => String(v ?? '').split(/\s*;\s*/).map(x => x.trim()).filter(Boolean);
 const joinPub = a => a.join('; ');
 function renameList(works, field, renames, multi) {
@@ -156,11 +156,21 @@ const GoogleStore = {
     return f.id;
   },
   async photoBlob(id) { return (await this.api(`https://www.googleapis.com/drive/v3/files/${id}?alt=media`)).blob(); },
-  async saveProvenance(name, docxBlob) {
-    const doc = await this.upload({ name, parents: [this.meta.prov], mimeType: 'application/vnd.google-apps.document' }, docxBlob,
+  async loanFolder() {
+    if (this.meta.loans) return this.meta.loans;
+    const q = encodeURIComponent(`appProperties has { key='bw' and value='loans' } and '${this.meta.root}' in parents and trashed=false`);
+    const r = await this.drive(`files?q=${q}&fields=files(id)&spaces=drive`);
+    const id = r.files.length ? r.files[0].id : (await this.folder(I18N[this.settings.lang].sheet.loans, this.meta.root, 'loans')).id;
+    this.meta.loans = id;
+    return id;
+  },
+  async saveLoan(name, docxBlob) { return this.saveProvenance(name, docxBlob, await this.loanFolder()); },
+  async saveProvenance(name, docxBlob, folderId) {
+    const parent = folderId || this.meta.prov;
+    const doc = await this.upload({ name, parents: [parent], mimeType: 'application/vnd.google-apps.document' }, docxBlob,
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     const pdfBlob = await (await this.api(`https://www.googleapis.com/drive/v3/files/${doc.id}/export?mimeType=application/pdf`)).blob();
-    const pdf = await this.upload({ name: name + '.pdf', parents: [this.meta.prov] }, pdfBlob, 'application/pdf');
+    const pdf = await this.upload({ name: name + '.pdf', parents: [parent] }, pdfBlob, 'application/pdf');
     return { doc: doc.webViewLink, pdf: pdf.webViewLink };
   },
   links() { return { folder: 'https://drive.google.com/drive/folders/' + this.meta.root, sheet: 'https://docs.google.com/spreadsheets/d/' + this.ss }; }
@@ -187,6 +197,7 @@ const DemoStore = {
   async uploadPhoto(w, blob) { const id = 'demo-' + w.row; this.photos[id] = blob; return id; },
   async photoBlob(id) { return this.photos[id]; },
   async saveProvenance(name, docxBlob) { const u = URL.createObjectURL(docxBlob); return { doc: u, pdf: '', docName: name + '.docx' }; },
+  async saveLoan(name, docxBlob) { return this.saveProvenance(name, docxBlob); },
   links() { return { folder: '#', sheet: '#' }; }
 };
 

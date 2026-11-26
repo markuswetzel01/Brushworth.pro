@@ -204,6 +204,24 @@ dialog::backdrop{background:rgba(0,0,0,.4)}
         <div class="hint" id="provHint" data-t="provHint" style="margin-top:8px"></div>
         <div class="links" id="provLinks"></div>
       </div>
+      <div class="prov" id="loanBox">
+        <span class="lbl" data-t="loanTitle"></span>
+        <div class="grid" style="margin-top:10px">
+          <label class="f"><span class="lbl" data-t="loanName"></span><input id="loanName" autocomplete="off"></label>
+          <label class="f"><span class="lbl" data-t="loanAddr"></span><input id="loanAddr" autocomplete="off"></label>
+          <label class="f"><span class="lbl" data-t="loanFrom"></span><input id="loanFrom" type="date"></label>
+          <label class="f"><span class="lbl" data-t="loanTo"></span><input id="loanTo" type="date"></label>
+          <label class="f s2"><span class="lbl" data-t="loanValue"></span><input id="loanValue" inputmode="decimal"></label>
+          <label class="f s2"><span class="lbl" data-t="loanBuy"></span><input id="loanBuy" inputmode="decimal"></label>
+          <label class="f s2"><span class="lbl" data-t="loanFee"></span><input id="loanFee" inputmode="decimal" data-ph="loanFeePh"></label>
+        </div>
+        <div class="row" style="margin-top:10px">
+          <select id="llang"><option value="de">Deutsch</option><option value="en">English</option></select>
+          <button id="mkLoan" type="button" class="ghost" data-t="loanMake"></button>
+        </div>
+        <div class="hint" id="loanHint" data-t="loanHint" style="margin-top:8px"></div>
+        <div class="links" id="loanLinks"></div>
+      </div>
     </section>
 
     <section class="card">
@@ -277,6 +295,8 @@ dialog::backdrop{background:rgba(0,0,0,.4)}
 <script src="engine.js"></script>
 <script src="store.js"></script>
 <script src="provenance.js"></script>
+<script src="loan-text.js"></script>
+<script src="loan.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

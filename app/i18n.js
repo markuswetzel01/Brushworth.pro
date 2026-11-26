@@ -25,6 +25,9 @@ const I18N = {
     fExh: 'Ausstellungen (eine pro Zeile)', fPub: 'Publikationen', fPubPh: 'z. B. Katalog 2026, S. 42', fPubHint: 'Mehrfachauswahl möglich. Das Werk bleibt immer im Werkverzeichnis.', pubNone: 'Keine Zuordnung', pubOld: 'nicht mehr in der Liste', catAll: 'Alle Werke', catNone: 'Ohne Publikation', fNotes: 'Notizen (intern)',
     yes: 'ja', no: 'nein', srcBw: 'Brushworth', srcManual: 'manuell',
     save: 'Werk speichern', saved: id => 'Gespeichert: ' + id, saveFailed: 'Speichern fehlgeschlagen', needTitle: 'Bitte einen Titel eintragen.',
+    loanTitle: 'Leihvertrag', loanName: 'Leihnehmer (Name)', loanAddr: 'Anschrift Leihnehmer', loanFrom: 'Leihe von', loanTo: 'Leihe bis', loanValue: 'Versicherungswert €', loanBuy: 'Kaufpreis bei Übernahme €', loanFee: 'Leihgebühr €', loanFeePh: 'leer = unentgeltlich',
+    loanMake: 'Leihvertrag erstellen', loanHint: 'Erstellt ein Google-Doc und ein PDF im Ordner „Leihverträge“. Status und Kategorie werden auf „Leihgabe“ gesetzt, der Standort auf den Leihnehmer.',
+    loanRunning: 'Leihvertrag wird erstellt …', loanNeedName: 'Bitte den Namen des Leihnehmers eintragen.', loanNote: (n, a, b) => `Leihgabe an ${n}${a || b ? ', ' + [a, b].filter(Boolean).join(' – ') : ''}`,
     provTitle: 'Provenienz-Nachweis', provMake: 'Provenienz erstellen', provHint: 'Erstellt ein Google-Doc und ein PDF im Ordner „Provenienz“, mit Foto und Werkdaten.',
     provRunning: 'Provenienz wird erstellt …', provDone: n => 'Erstellt: ' + n, provDoc: 'Google-Doc öffnen', provPdf: 'PDF öffnen', provFailed: 'Erstellen fehlgeschlagen',
     bwTitle: 'Brushworth-Preisvorschlag', bwComp: 'Prozess-Komplexität', bwMkt: 'Marktsegment', bwGeo: 'Geografischer Markt', bwEdit: 'Ausführung / Auflage', bwRound: 'Rundung',
@@ -55,7 +58,7 @@ const I18N = {
       works: 'Werke', hist: 'Preishistorie', settings: 'Einstellungen',
       worksHead: ['Werknummer', 'Titel', 'Jahr', 'Serie', 'Technik', 'Untergrund', 'Breite cm', 'Höhe cm', 'Tiefe cm', 'Signatur', 'Status', 'Standort', 'Preis €', 'Preisquelle', 'Käufer/in', 'Verkaufsdatum', 'Ausstellungen', 'Publikationen', 'Website', 'Notizen', 'Foto-ID', 'Geändert'],
       histHead: ['Datum', 'Werknummer', 'Titel', 'Breite cm', 'Höhe cm', 'm²', 'Technik', 'Komplexität', 'Marktsegment', 'Geo-Markt', 'Ausführung', 'Material €', 'Rahmung €', 'Inflation %', 'MwSt %', 'Galerie %', 'Rundung', 'Multiplikator', 'Richtwert €', 'Spanne von €', 'Spanne bis €', 'Bewertung', 'Gewählter Preis €', 'Übernommen', 'Notiz'],
-      folder: 'Brushworth.pro', photos: 'Fotos', prov: 'Provenienz', file: 'Werkverzeichnis'
+      folder: 'Brushworth.pro', photos: 'Fotos', prov: 'Provenienz', loans: 'Leihverträge', file: 'Werkverzeichnis'
     },
     prov: {
       file: 'Provenienz', title: 'Provenienz-Nachweis', sub: 'mit Echtheitsbestätigung der Künstlerin / des Künstlers',
@@ -100,6 +103,9 @@ const I18N = {
     fExh: 'Exhibitions (one per line)', fPub: 'Publications', fPubPh: 'e.g. Catalogue 2026, p. 42', fPubHint: 'Select as many as you like. The work always stays in the catalogue.', pubNone: 'Not assigned', pubOld: 'no longer in the list', catAll: 'All works', catNone: 'No publication', fNotes: 'Notes (internal)',
     yes: 'yes', no: 'no', srcBw: 'Brushworth', srcManual: 'manual',
     save: 'Save artwork', saved: id => 'Saved: ' + id, saveFailed: 'Saving failed', needTitle: 'Please enter a title.',
+    loanTitle: 'Loan agreement', loanName: 'Borrower (name)', loanAddr: 'Borrower address', loanFrom: 'Loan from', loanTo: 'Loan until', loanValue: 'Insured value €', loanBuy: 'Purchase price €', loanFee: 'Loan fee €', loanFeePh: 'empty = free of charge',
+    loanMake: 'Create loan agreement', loanHint: 'Creates a Google Doc and a PDF in the “Loan agreements” folder. Status and category are set to “on loan”, the location to the borrower.',
+    loanRunning: 'Creating loan agreement …', loanNeedName: 'Please enter the borrower’s name.', loanNote: (n, a, b) => `On loan to ${n}${a || b ? ', ' + [a, b].filter(Boolean).join(' – ') : ''}`,
     provTitle: 'Certificate of Provenance', provMake: 'Create provenance', provHint: 'Creates a Google Doc and a PDF in the “Provenance” folder, with photo and artwork details.',
     provRunning: 'Creating provenance …', provDone: n => 'Created: ' + n, provDoc: 'Open Google Doc', provPdf: 'Open PDF', provFailed: 'Creation failed',
     bwTitle: 'Brushworth price suggestion', bwComp: 'Process complexity', bwMkt: 'Market segment', bwGeo: 'Geographic market', bwEdit: 'Execution / edition', bwRound: 'Rounding',
@@ -130,7 +136,7 @@ const I18N = {
       works: 'Works', hist: 'Price history', settings: 'Settings',
       worksHead: ['Catalogue no.', 'Title', 'Year', 'Series', 'Medium', 'Support', 'Width cm', 'Height cm', 'Depth cm', 'Signature', 'Status', 'Location', 'Price €', 'Price source', 'Buyer', 'Date of sale', 'Exhibitions', 'Publications', 'Website', 'Notes', 'Photo ID', 'Updated'],
       histHead: ['Date', 'Catalogue no.', 'Title', 'Width cm', 'Height cm', 'm²', 'Medium', 'Complexity', 'Market segment', 'Geo market', 'Execution', 'Materials €', 'Framing €', 'Inflation %', 'VAT %', 'Gallery %', 'Rounding', 'Multiplier', 'Reference €', 'Range from €', 'Range to €', 'Rating', 'Chosen price €', 'Applied', 'Note'],
-      folder: 'Brushworth.pro', photos: 'Photos', prov: 'Provenance', file: 'Catalogue'
+      folder: 'Brushworth.pro', photos: 'Photos', prov: 'Provenance', loans: 'Loan agreements', file: 'Catalogue'
     },
     prov: {
       file: 'Provenance', title: 'Certificate of Provenance', sub: 'with Certificate of Authenticity by the Artist',

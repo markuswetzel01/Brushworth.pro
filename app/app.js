@@ -90,6 +90,11 @@ function enterApp() {
   if (needsNewLicense()) { showRelicense(); return; } if (!store.get('bw-lang') && S.settings.lang) LANG = S.settings.lang; $('hArtist').textContent = S.settings.artist || ''; show('scrApp'); applyLang(); select(null); }
 
 // ── Publikationen (Mehrfachauswahl) ──
+const LOAN = 'loan';
+function loanCat() { const names = [I18N.de.opt.status.loan, I18N.en.opt.status.loan, 'Loan'].map(x => x.toLowerCase());
+  return (S.settings.pubs || []).find(x => names.includes(x.toLowerCase())) || I18N[S.settings.lang || 'de'].opt.status.loan; }
+function setLoanTag(on) { const lc = loanCat(), a = splitPub($('pub').value).filter(x => x !== lc); if (on) a.push(lc); $('pub').value = joinPub(a); renderPub(); }
+$('status').addEventListener('change', () => setLoanTag($('status').value === LOAN));
 function fillCat() { fillSel('cat', [['', T('catAll')], ...(S.settings.pubs || []).map(x => [x, x]), ['-', T('catNone')]]); }
 function renderPub() {
   const sel = splitPub($('pub').value), list = S.settings ? S.settings.pubs || [] : [], extra = sel.filter(x => !list.includes(x));
@@ -97,7 +102,9 @@ function renderPub() {
   [...list, ...extra].forEach(name => {
     const l = document.createElement('label'), c = document.createElement('input'), t = document.createElement('span');
     c.type = 'checkbox'; c.checked = sel.includes(name); t.textContent = name;
-    c.onchange = () => { const now = splitPub($('pub').value); $('pub').value = joinPub(c.checked ? [...now, name] : now.filter(x => x !== name)); renderPub(); };
+    c.onchange = () => { const now = splitPub($('pub').value); $('pub').value = joinPub(c.checked ? [...now, name] : now.filter(x => x !== name));
+      if (name === loanCat()) { if (c.checked) $('status').value = LOAN; else if ($('status').value === LOAN) $('status').value = 'available'; }
+      renderPub(); };
     l.append(c, t); if (!list.includes(name)) { const x = document.createElement('span'); x.className = 'x'; x.textContent = '(' + T('pubOld') + ')'; l.append(x); }
     box.append(l);
   });
@@ -131,6 +138,8 @@ function select(w) {
   $('wid').textContent = cur && cur.id ? cur.id : T('isNew');
   $('saveHint').textContent = ''; $('chosen').value = ''; $('chosen').dataset.auto = '1'; $('pnote').value = ''; $('provLinks').innerHTML = '';
   $('provHint').textContent = T('provHint'); $('photoHint').textContent = T('photoHint'); $('plang').value = LANG;
+  ['loanName', 'loanAddr', 'loanFrom', 'loanTo', 'loanFee'].forEach(k => $(k).value = ''); $('loanValue').value = $('loanBuy').value = cur && cur.price ? cur.price : '';
+  $('llang').value = LANG; $('loanLinks').innerHTML = ''; $('loanHint').textContent = T('loanHint');
   renderList(); update(); showPhoto();
 }
 function readWork() { const o = { ...(cur || {}) }; FIELDS.forEach(f => o[f] = $(f).value.trim()); return o; }
@@ -253,6 +262,27 @@ $('mkProv').onclick = async () => {
       const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t; if (dl) a.download = dl; $('provLinks').append(a); });
   } catch (e) { $('provHint').textContent = T('provFailed') + (e && e.message ? ': ' + e.message : ''); }
   finally { $('mkProv').disabled = false; }
+};
+
+// ── Leihvertrag ──
+$('mkLoan').onclick = async () => {
+  const L = { name: $('loanName').value.trim(), addr: $('loanAddr').value.trim(), from: $('loanFrom').value, to: $('loanTo').value, value: $('loanValue').value.trim(), buy: $('loanBuy').value.trim(), fee: $('loanFee').value.trim() };
+  if (!L.name) { $('loanHint').textContent = T('loanNeedName'); $('loanName').focus(); return; }
+  const lang = $('llang').value; $('mkLoan').disabled = true; $('loanLinks').innerHTML = ''; $('loanHint').textContent = T('loanRunning');
+  try {
+    $('status').value = LOAN; setLoanTag(true); $('loc').value = L.name;
+    const fd = v => v ? new Date(v + 'T12:00:00').toLocaleDateString(LANG === 'de' ? 'de-DE' : 'en-GB') : '';
+    const note = T('loanNote')(L.name, fd(L.from), fd(L.to)); if (!$('notes').value.includes(note)) $('notes').value = ($('notes').value.trim() + '\n' + note).trim();
+    const w = await saveWork();
+    const photo = w.photo ? await S.photoBlob(w.photo).catch(() => null) : null;
+    const { blob, file } = await buildLoan(w, S.settings, lang, photo, L);
+    const name = `${w.id} ${file} – ${L.name}`;
+    const res = await S.saveLoan(name, blob);
+    $('loanHint').textContent = T('provDone')(name);
+    [[T('provDoc'), res.doc, res.docName], [T('provPdf'), res.pdf]].filter(x => x[1]).forEach(([t, u, dl]) => {
+      const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.rel = 'noopener'; a.textContent = t; if (dl) a.download = dl; $('loanLinks').append(a); });
+  } catch (e) { $('loanHint').textContent = T('provFailed') + (e && e.message ? ': ' + e.message : ''); }
+  finally { $('mkLoan').disabled = false; }
 };
 
 // ── Einstellungen ──
