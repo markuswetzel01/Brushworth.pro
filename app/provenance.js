@@ -39,7 +39,7 @@ async function buildProvenance(w, s, lang, photo) {
   const date = v => { if (!v) return ''; const d = new Date(v + 'T12:00:00'); return isNaN(d) ? String(v) : d.toLocaleDateString(lang === 'de' ? 'de-DE' : 'en-GB', { day: 'numeric', month: lang === 'de' ? '2-digit' : 'short', year: 'numeric' }); };
   const sold = date(w.soldDate);
   const owner = w.buyer ? w.buyer : (w.status === 'sold' ? P_.privateColl : artist);
-  const listed = (String(w.exh || '') + '\n' + String(w.pub || '')).split(/\n+/).map(x => x.trim()).filter(Boolean);
+  const listed = String(w.exh || '').split(/\n+/).map(x => x.trim()).filter(Boolean);
   const exh = [0, 1, 2, 3].map(i => ['', i < 3 ? (listed[i] || '') : listed.slice(3).join('; '), '']);
   const prov = [[P_.creation + sold, P_.studio(artist), '', '—', P_.catalog],
     w.buyer ? [sold ? P_.since + sold : '', w.buyer, '', '', ''] : ['', '', '', '', ''], ...Array.from({ length: 4 }, () => ['', '', '', '', ''])];
